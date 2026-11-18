@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "EcoPet",
+    "slug": "ecopet-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#F1EFE8"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.ecopet.app"
+    },
+    "android": {
+      "package": "com.ecopet.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#F1EFE8"
+      }
+    }
+  }
+}
