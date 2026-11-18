@@ -110,22 +110,24 @@ src/
 
 ## Generar el APK (app instalable en Android)
 
-Requisitos: Android Studio instalado (trae el JDK y el SDK de Android).
+Se compila en la nube con **EAS Build** (proyecto `@cobos012/ecopet-app`, ya
+vinculado en `app.json`). Solo hace falta una cuenta de Expo:
 
 ```bash
-npx expo prebuild --platform android      # genera la carpeta android/ (no se sube a git)
-cd android
-# En Git Bash, usando el JDK que trae Android Studio:
-export JAVA_HOME="/c/Program Files/Android/Android Studio/jbr"
-./gradlew assembleRelease
+npx eas-cli@latest login                                  # una sola vez (en una terminal normal)
+npx eas-cli@latest build -p android --profile preview     # APK para instalar directo
+npx eas-cli@latest build -p android --profile production  # .aab para Google Play
 ```
 
-El APK queda en `android/app/build/outputs/apk/release/app-release.apk`. Se copia
-al celular y se instala (hay que permitir "instalar apps de origen desconocido").
+Al terminar, EAS da un enlace para descargar el APK; se abre en el celular y se
+instala (hay que permitir "instalar apps de origen desconocido"). La clave de
+firma la guarda Expo en la cuenta, así cada versión nueva se instala encima de la
+anterior. Antes de cada versión nueva, sube `version` y `android.versionCode` en
+`app.json`.
 
-Está firmado con la clave de depuración: sirve para instalar y compartir, pero
-para publicarlo en Google Play hay que crear una clave de firma propia (o usar
-`eas build`). Cada versión nueva debe subir `android.versionCode` en `app.json`.
+Compilar localmente en Windows (`npx expo prebuild` + `gradlew assembleRelease`)
+falla por el límite de 260 caracteres en las rutas de CMake, salvo que se activen
+las rutas largas de Windows (`LongPathsEnabled`) y se use ninja 1.12 o superior.
 
 ## Comandos útiles
 
