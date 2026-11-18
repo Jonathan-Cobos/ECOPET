@@ -2,22 +2,38 @@
   "expo": {
     "name": "EcoPet",
     "slug": "ecopet-app",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "orientation": "portrait",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
       "backgroundColor": "#F1EFE8"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.ecopet.app"
     },
     "android": {
       "package": "com.ecopet.app",
+      "versionCode": 1,
       "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#F1EFE8"
       }
-    }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "99f5051d-992e-4ecc-af83-41abe5f22274"
+      }
+    },
+    "owner": "cobos012"
   }
 }

@@ -108,6 +108,25 @@ src/
   utils/                     formato y reglas de recomendación
 ```
 
+## Generar el APK (app instalable en Android)
+
+Requisitos: Android Studio instalado (trae el JDK y el SDK de Android).
+
+```bash
+npx expo prebuild --platform android      # genera la carpeta android/ (no se sube a git)
+cd android
+# En Git Bash, usando el JDK que trae Android Studio:
+export JAVA_HOME="/c/Program Files/Android/Android Studio/jbr"
+./gradlew assembleRelease
+```
+
+El APK queda en `android/app/build/outputs/apk/release/app-release.apk`. Se copia
+al celular y se instala (hay que permitir "instalar apps de origen desconocido").
+
+Está firmado con la clave de depuración: sirve para instalar y compartir, pero
+para publicarlo en Google Play hay que crear una clave de firma propia (o usar
+`eas build`). Cada versión nueva debe subir `android.versionCode` en `app.json`.
+
 ## Comandos útiles
 
 ```bash
@@ -119,4 +138,3 @@ npx expo start -c    # arranca limpiando la caché
 
 - Sincronizar con el backend (`ecopet-backend`, Node + Express + MySQL) si más
   adelante se quiere guardar los datos fuera del celular.
-- Ícono de app y splash nativo para generar el APK/IPA (hoy corre en Expo Go).

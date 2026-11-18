@@ -8,3 +8,7 @@ npm-debug.*
 *.key
 *.mobileprovision
 .env
+
+# Proyecto nativo generado con "npx expo prebuild"
+/android
+/ios
