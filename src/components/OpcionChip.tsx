@@ -1,6 +1,7 @@
 import React from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
-import { colors } from '@/theme/colors';
+import type { Palette } from '@/theme/colors';
+import { useStyles } from '@/theme/ThemeContext';
 
 interface Props {
   label: string;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function OpcionChip({ label, seleccionada, onPress, colorActivo, colorTextoActivo }: Props) {
+  const styles = useStyles(crearEstilos);
   return (
     <Pressable
       onPress={onPress}
@@ -25,15 +27,16 @@ export function OpcionChip({ label, seleccionada, onPress, colorActivo, colorTex
   );
 }
 
-const styles = StyleSheet.create({
-  chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 9,
-    borderRadius: 999,
-    backgroundColor: colors.background,
-  },
-  texto: {
-    fontSize: 13,
-    color: colors.textPrimary,
-  },
-});
+const crearEstilos = (c: Palette) =>
+  StyleSheet.create({
+    chip: {
+      paddingHorizontal: 14,
+      paddingVertical: 9,
+      borderRadius: 999,
+      backgroundColor: c.background,
+    },
+    texto: {
+      fontSize: 13,
+      color: c.textPrimary,
+    },
+  });

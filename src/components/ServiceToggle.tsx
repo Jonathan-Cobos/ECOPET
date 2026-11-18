@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Pressable, Text, StyleSheet } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
-import { colors, ServiceType } from '@/theme/colors';
+import type { Palette, ServiceType } from '@/theme/colors';
+import { useStyles, useTheme } from '@/theme/ThemeContext';
 
 interface Props {
   servicioActivo: ServiceType;
@@ -14,10 +15,6 @@ const ICONOS: Record<ServiceType, string> = {
 };
 
 const ETIQUETAS: Record<ServiceType, string> = { agua: 'Agua', luz: 'Luz' };
-const COLOR_ACTIVO: Record<ServiceType, string> = {
-  agua: colors.agua.text,
-  luz: colors.luz.text,
-};
 
 function Item({
   servicio,
@@ -28,7 +25,9 @@ function Item({
   activo: boolean;
   onPress: () => void;
 }) {
-  const color = activo ? COLOR_ACTIVO[servicio] : colors.textMuted;
+  const { colors } = useTheme();
+  const styles = useStyles(crearEstilos);
+  const color = activo ? colors[servicio].text : colors.textMuted;
   return (
     <Pressable
       style={styles.item}
@@ -56,6 +55,7 @@ function Item({
 
 // Toolbar inferior: elige qué mascota (agua o luz) se ve en la pantalla principal.
 export function ServiceToggle({ servicioActivo, onChange }: Props) {
+  const styles = useStyles(crearEstilos);
   return (
     <View style={styles.bar} accessibilityRole="tablist">
       <Item servicio="agua" activo={servicioActivo === 'agua'} onPress={() => onChange('agua')} />
@@ -64,24 +64,25 @@ export function ServiceToggle({ servicioActivo, onChange }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  bar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.textMuted,
-    paddingTop: 10,
-  },
-  item: {
-    flex: 1,
-    alignItems: 'center',
-    gap: 2,
-    paddingVertical: 2,
-  },
-  label: {
-    fontSize: 11,
-  },
-  labelActivo: {
-    fontWeight: '600',
-  },
-});
+const crearEstilos = (c: Palette) =>
+  StyleSheet.create({
+    bar: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: c.textMuted,
+      paddingTop: 10,
+    },
+    item: {
+      flex: 1,
+      alignItems: 'center',
+      gap: 2,
+      paddingVertical: 2,
+    },
+    label: {
+      fontSize: 11,
+    },
+    labelActivo: {
+      fontWeight: '600',
+    },
+  });

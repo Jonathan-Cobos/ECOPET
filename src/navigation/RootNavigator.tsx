@@ -1,19 +1,40 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useMemo } from 'react';
+import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { colors } from '@/theme/colors';
+import { useTheme } from '@/theme/ThemeContext';
 import { PortadaScreen } from '@/screens/PortadaScreen';
+import { EncuestaHogarScreen } from '@/screens/EncuestaHogarScreen';
 import { HomeScreen } from '@/screens/HomeScreen';
 import { RegistrarConsumoScreen } from '@/screens/RegistrarConsumoScreen';
 import { CuestionarioScreen } from '@/screens/CuestionarioScreen';
+import { HistorialScreen } from '@/screens/HistorialScreen';
+import { LogrosScreen } from '@/screens/LogrosScreen';
+import { EvolucionScreen } from '@/screens/EvolucionScreen';
+import { TarifasScreen } from '@/screens/TarifasScreen';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function RootNavigator() {
+  const { colors, esOscuro } = useTheme();
+
+  const tema = useMemo(() => {
+    const base = esOscuro ? DarkTheme : DefaultTheme;
+    return {
+      ...base,
+      colors: {
+        ...base.colors,
+        background: colors.background,
+        card: colors.surface,
+        text: colors.textPrimary,
+        border: colors.border,
+      },
+    };
+  }, [colors, esOscuro]);
+
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={tema}>
       <Stack.Navigator
         initialRouteName="Portada"
         screenOptions={{
@@ -25,6 +46,15 @@ export function RootNavigator() {
         }}
       >
         <Stack.Screen name="Portada" component={PortadaScreen} options={{ headerShown: false }} />
+        <Stack.Screen
+          name="EncuestaHogar"
+          component={EncuestaHogarScreen}
+          options={({ route }) => ({
+            headerShown: route.params.modo === 'editar',
+            title: 'Datos del hogar',
+            animation: route.params.modo === 'inicial' ? 'fade' : 'default',
+          })}
+        />
         <Stack.Screen
           name="Home"
           component={HomeScreen}
@@ -40,6 +70,14 @@ export function RootNavigator() {
           component={CuestionarioScreen}
           options={{ title: 'Cuestionario de hábitos' }}
         />
+        <Stack.Screen name="Historial" component={HistorialScreen} options={{ title: 'Historial' }} />
+        <Stack.Screen name="Logros" component={LogrosScreen} options={{ title: 'Logros' }} />
+        <Stack.Screen
+          name="Evolucion"
+          component={EvolucionScreen}
+          options={{ title: 'Mascota y accesorios' }}
+        />
+        <Stack.Screen name="Tarifas" component={TarifasScreen} options={{ title: 'Tarifas y costos' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

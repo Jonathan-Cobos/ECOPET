@@ -1,9 +1,10 @@
 import React from 'react';
 import Svg, { Circle, Path } from 'react-native-svg';
-import { colors } from '@/theme/colors';
+import { useTheme } from '@/theme/ThemeContext';
 
 // Logo de EcoPet: una gota (agua) y un rayo (luz) unidos, igual que en la portada.
 export function Logo({ size = 128 }: { size?: number }) {
+  const { colors } = useTheme();
   return (
     <Svg width={size} height={size} viewBox="0 0 128 128" accessibilityLabel="Logo de EcoPet">
       <Circle cx={64} cy={64} r={60} fill={colors.background} />

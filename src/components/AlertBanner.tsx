@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors } from '@/theme/colors';
+import type { Palette } from '@/theme/colors';
+import { useStyles, useTheme } from '@/theme/ThemeContext';
 
 interface Props {
   tipo: 'estandar' | 'fuga';
@@ -11,6 +12,8 @@ interface Props {
 }
 
 export function AlertBanner({ tipo, titulo, mensaje, onPress }: Props) {
+  const { colors } = useTheme();
+  const styles = useStyles(crearEstilos);
   const esFuga = tipo === 'fuga';
   const tinta = esFuga ? colors.danger : colors.warning;
 
@@ -35,25 +38,26 @@ export function AlertBanner({ tipo, titulo, mensaje, onPress }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  banner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-  },
-  textos: {
-    flex: 1,
-  },
-  titulo: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  mensaje: {
-    fontSize: 11,
-    color: colors.textSecondary,
-    marginTop: 2,
-  },
-});
+const crearEstilos = (c: Palette) =>
+  StyleSheet.create({
+    banner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      borderRadius: 8,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+    },
+    textos: {
+      flex: 1,
+    },
+    titulo: {
+      fontSize: 12,
+      fontWeight: '500',
+    },
+    mensaje: {
+      fontSize: 11,
+      color: c.textSecondary,
+      marginTop: 2,
+    },
+  });

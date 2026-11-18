@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { colors, colorsFor } from '@/theme/colors';
+import type { Palette } from '@/theme/colors';
+import { useStyles, useTheme } from '@/theme/ThemeContext';
 import { useApp } from '@/context/AppContext';
 import { OpcionChip } from '@/components/OpcionChip';
 import type { RootStackParamList } from '@/navigation/types';
@@ -84,7 +85,9 @@ const PREGUNTAS: Record<'agua' | 'luz', Pregunta[]> = {
 export function CuestionarioScreen({ route, navigation }: Props) {
   const { servicio } = route.params;
   const { responderCuestionario } = useApp();
-  const palette = colorsFor(servicio);
+  const { colors } = useTheme();
+  const styles = useStyles(crearEstilos);
+  const palette = colors[servicio];
   const preguntas = PREGUNTAS[servicio];
 
   const [respuestas, setRespuestas] = useState<RespuestasCuestionario>({});
@@ -160,65 +163,66 @@ export function CuestionarioScreen({ route, navigation }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  pantalla: {
-    flex: 1,
-    backgroundColor: colors.background,
-    padding: 12,
-  },
-  tarjeta: {
-    backgroundColor: colors.surface,
-    borderRadius: 20,
-    padding: 20,
-  },
-  titulo: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: colors.textPrimary,
-  },
-  subtitulo: {
-    fontSize: 13,
-    color: colors.textSecondary,
-    marginTop: 4,
-    marginBottom: 20,
-    lineHeight: 18,
-  },
-  pregunta: {
-    marginBottom: 20,
-  },
-  preguntaTexto: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.textPrimary,
-    marginBottom: 10,
-  },
-  opciones: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  boton: {
-    borderRadius: 8,
-    paddingVertical: 14,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  botonInactivo: {
-    opacity: 0.45,
-  },
-  botonTexto: {
-    fontWeight: '500',
-    fontSize: 14,
-  },
-  tituloRecomendacion: {
-    fontSize: 16,
-    fontWeight: '500',
-    marginBottom: 8,
-  },
-  textoRecomendacion: {
-    fontSize: 14,
-    color: colors.textPrimary,
-    lineHeight: 21,
-    marginBottom: 20,
-  },
-});
+const crearEstilos = (c: Palette) =>
+  StyleSheet.create({
+    pantalla: {
+      flex: 1,
+      backgroundColor: c.background,
+      padding: 12,
+    },
+    tarjeta: {
+      backgroundColor: c.surface,
+      borderRadius: 20,
+      padding: 20,
+    },
+    titulo: {
+      fontSize: 18,
+      fontWeight: '500',
+      color: c.textPrimary,
+    },
+    subtitulo: {
+      fontSize: 13,
+      color: c.textSecondary,
+      marginTop: 4,
+      marginBottom: 20,
+      lineHeight: 18,
+    },
+    pregunta: {
+      marginBottom: 20,
+    },
+    preguntaTexto: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: c.textPrimary,
+      marginBottom: 10,
+    },
+    opciones: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    boton: {
+      borderRadius: 8,
+      paddingVertical: 14,
+      alignItems: 'center',
+      marginTop: 8,
+    },
+    botonInactivo: {
+      opacity: 0.45,
+    },
+    botonTexto: {
+      fontWeight: '500',
+      fontSize: 14,
+    },
+    tituloRecomendacion: {
+      fontSize: 16,
+      fontWeight: '500',
+      marginBottom: 8,
+    },
+    textoRecomendacion: {
+      fontSize: 14,
+      color: c.textPrimary,
+      lineHeight: 21,
+      marginBottom: 20,
+    },
+  });

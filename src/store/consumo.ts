@@ -10,6 +10,10 @@ export function ordenarRecientesPrimero(registros: Registro[]): Registro[] {
   return [...registros].sort((a, b) => (a.periodo < b.periodo ? 1 : -1));
 }
 
+export function ordenarCronologico(registros: Registro[]): Registro[] {
+  return [...registros].sort((a, b) => (a.periodo < b.periodo ? -1 : 1));
+}
+
 /**
  * Compara el último registro con el anterior y con el estándar:
  * - bajó o se mantuvo            -> mascota feliz
@@ -43,14 +47,24 @@ export function periodoActual(ahora = new Date()): string {
   return `${ahora.getFullYear()}-${mm}-01`;
 }
 
-/** Agrega el registro del mes actual; si ya existe uno de ese mes, lo reemplaza. */
+/** Número de mes absoluto (año * 12 + mes), para saber si dos periodos son consecutivos. */
+export function indiceMes(periodo: string): number {
+  const [anio, mes] = periodo.split('-').map(Number);
+  return anio * 12 + (mes - 1);
+}
+
+export function desplazarPeriodo(periodo: string, meses: number): string {
+  const [anio, mes] = periodo.split('-').map(Number);
+  return periodoActual(new Date(anio, mes - 1 + meses, 1));
+}
+
+/** Guarda el consumo de un mes (por defecto el actual); si ya existe uno de ese mes, lo reemplaza. */
 export function agregarRegistro(
   datos: Datos,
   servicio: ServiceType,
   valor: number,
-  ahora = new Date()
+  periodo = periodoActual()
 ): Datos {
-  const periodo = periodoActual(ahora);
   const existentes = datos.registros[servicio];
   const mismoMes = existentes.find((r) => r.periodo === periodo);
 
@@ -66,6 +80,17 @@ export function agregarRegistro(
     ...datos,
     registros: { ...datos.registros, [servicio]: registros },
     // Un registro nuevo invalida la recomendación anterior.
+    recomendaciones: { ...datos.recomendaciones, [servicio]: null },
+  };
+}
+
+export function eliminarRegistro(datos: Datos, servicio: ServiceType, id: number): Datos {
+  return {
+    ...datos,
+    registros: {
+      ...datos.registros,
+      [servicio]: datos.registros[servicio].filter((r) => r.id !== id),
+    },
     recomendaciones: { ...datos.recomendaciones, [servicio]: null },
   };
 }
@@ -87,7 +112,35 @@ export function datosDemo(ahora = new Date()): Datos {
 
   return {
     registros: { agua: construir(agua), luz: construir(luz) },
-    estandares: { agua: 10, luz: 150 },
     recomendaciones: { agua: null, luz: null },
+    perfil: null,
+    tarifas: { agua: null, luz: null },
+    accesorios: {
+      agua: { cabeza: null, cara: null },
+      luz: { cabeza: null, cara: null },
+    },
+    preferencias: { tema: 'sistema' },
+    cuestionarioRespondido: false,
+    logrosVistos: null,
+  };
+}
+
+/** Completa con valores por defecto los datos guardados por versiones anteriores de la app. */
+export function normalizarDatos(raw: unknown): Datos {
+  const base = datosDemo();
+  if (!raw || typeof raw !== 'object') return base;
+  const r = raw as Partial<Datos>;
+  return {
+    registros: r.registros ?? base.registros,
+    recomendaciones: r.recomendaciones ?? base.recomendaciones,
+    perfil: r.perfil ?? null,
+    tarifas: { ...base.tarifas, ...r.tarifas },
+    accesorios: {
+      agua: { ...base.accesorios.agua, ...r.accesorios?.agua },
+      luz: { ...base.accesorios.luz, ...r.accesorios?.luz },
+    },
+    preferencias: { ...base.preferencias, ...r.preferencias },
+    cuestionarioRespondido: r.cuestionarioRespondido ?? false,
+    logrosVistos: r.logrosVistos ?? null,
   };
 }
